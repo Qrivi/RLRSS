@@ -103,7 +103,7 @@ foreach ($site->getElementsByTagName("div") as $node) {
             foreach ($post->getElementsByTagName("div") as $article) {
                 if (strpos($article->getAttribute("class"), "article") !== false) {
                     $article->removeChild($article->lastChild); // remove share buttons
-                    $d = $post->saveHTML($article);
+                    $d = preg_replace("/(\r\n|\r|\n)/", "", $post->saveHTML($article));
                 }
             }
 
@@ -117,4 +117,4 @@ foreach ($site->getElementsByTagName("div") as $node) {
     }
 }
 
-print $feed->saveXML();
+echo $feed->saveXML();
