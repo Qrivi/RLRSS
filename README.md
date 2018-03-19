@@ -23,7 +23,7 @@ Examples:
 -   [labs.krivi.be/RLRSS?count=420&detail=off](http://labs.krivi.be/RLRSS?count=420&detail=off)
 -   [labs.krivi.be/RLRSS?count=10&detail=true](http://labs.krivi.be/RLRSS?count=10&detail=true) (default)
 
-Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play safe.
+Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play safe. Likewise, same rule applies to `false`.
 
 ## Output
 

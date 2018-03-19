@@ -1,9 +1,9 @@
 <?php header("Content-Type: application/rss+xml; charset=UTF-8");
 
 /* --------- */
-$feeditems = !empty($_GET["count"]) ? intval($_GET["count"]) : 10;
-$detailed = !empty($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE_BOOLEAN) : true;
-$debug = !empty($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
+$feeditems = isset($_GET["count"]) ? intval($_GET["count"]) : 10;
+$detailed = isset($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE_BOOLEAN) : true;
+$debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
 /* --------- */
 
 libxml_use_internal_errors(!$debug);
