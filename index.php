@@ -52,8 +52,8 @@ $image = $feed->createElement("image");
 $channel->appendChild($image);
 
 $imageurl = $feed->createElement("url", "http://" . $_SERVER["HTTP_HOST"] . substr($_SERVER["PHP_SELF"], 0, strrpos($_SERVER["PHP_SELF"], "/")) . "/feedlogo.png");
-$imagetitle = $feed->createElement("title");
-$imagelink = $feed->createElement("link");
+$imagetitle = $feed->createElement("title", "Rocket League News");
+$imagelink = $feed->createElement("link", "https://rocketleague.com/news");
 $image->appendChild($imageurl);
 $image->appendChild($imagetitle);
 $image->appendChild($imagelink);
