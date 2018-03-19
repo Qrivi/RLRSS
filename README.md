@@ -20,7 +20,7 @@ Examples:
 
 -   [labs.krivi.be/RLRSS?count=50&detail=no](http://labs.krivi.be/RLRSS?count=50&detail=no)
 -   [labs.krivi.be/RLRSS?count=5&detail=1](http://labs.krivi.be/RLRSS?count=5&detail=1)
--   [labs.krivi.be/RLRSS?count=5&detail=1](http://labs.krivi.be/RLRSS?count=420&detail=off)
+-   [labs.krivi.be/RLRSS?count=420&detail=off](http://labs.krivi.be/RLRSS?count=420&detail=off)
 -   [labs.krivi.be/RLRSS?count=10&detail=true](http://labs.krivi.be/RLRSS?count=10&detail=true) (default)
 
 Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play safe.
@@ -89,10 +89,8 @@ And in [Leaf](https://itunes.apple.com/app/id576338668), my preferred RSS client
 
 ![](https://i.imgur.com/VFwGpID.jpg)
 
-## (Potential) Issue
-
-The Rocket League news site adds a date to each post, but nowhere does the date include a year. PHP is smart enough to parse Rocket League's format (`D M j`, _Fri Mar 16_) to the required RFC 2822 format, but I can see things go wrong when the exact same day-date combination repeats itself amongst the posts that are fetched. To play safe, keep `count` at a number low enough not to include posts within [a period span of over 6 years](https://www.quora.com/How-often-in-years-do-calendars-repeat-with-the-same-day-date-combinations).
-
 ## Disclaimer
 
-I'm not affiliated with Psyonix or Rocket League in any way apart from the fact that I love their game (pls bring cross platform inventories k thx bye). If I did anything anyone's not ok with here, please slide in my DMs before taking legal action. GG
+I'm not affiliated with Psyonix or Rocket League in any way apart from the fact that I love their game (pls bring cross platform inventories k thx bye). If I did anything anyone's not ok with here, please slide in my DMs before taking legal action.
+
+⚽️🚙🚗 GG

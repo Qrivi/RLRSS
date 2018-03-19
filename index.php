@@ -58,6 +58,8 @@ $image->appendChild($imageurl);
 $image->appendChild($imagetitle);
 $image->appendChild($imagelink);
 
+$lastYear = date("Y");
+
 foreach ($site->getElementsByTagName("div") as $node) {
     if (!strcmp($node->getAttribute("class"), "headline")) {
         if ($feeditems !== -1 && --$feeditems < 0) {
@@ -66,7 +68,13 @@ foreach ($site->getElementsByTagName("div") as $node) {
 
         $t = $node->lastChild->textContent;
         $l = "https://rocketleague.com" . $node->lastChild->firstChild->getAttribute("href");
-        $p = DateTime::createFromFormat("D M j", $node->firstChild->textContent);
+        $p = explode(" ", $node->firstChild->textContent);
+
+        $date = DateTime::createFromFormat("j M Y", $p[2] . " " . $p[1] . " " . $lastYear);
+        while (strcmp($date->format("D"), $p[0]) !== 0) {
+            $lastYear--;
+            $date->modify("-1 year");
+        }
 
         $item = $feed->createElement("item");
         $channel->appendChild($item);
@@ -74,7 +82,7 @@ foreach ($site->getElementsByTagName("div") as $node) {
         $title = $feed->createElement("title", $t);
         $link = $feed->createElement("link", $l);
         $guid = $feed->createElement("guid", $l);
-        $pubDate = $feed->createElement("pubDate", $p->format("r"));
+        $pubDate = $feed->createElement("pubDate", $date->format("r"));
         $item->appendChild($title);
         $item->appendChild($link);
         $item->appendChild($guid);
