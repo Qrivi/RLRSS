@@ -20,10 +20,10 @@ Examples:
 
 -   [labs.krivi.be/RLRSS?count=50&detail=no](http://labs.krivi.be/RLRSS?count=50&detail=no)
 -   [labs.krivi.be/RLRSS?count=5&detail=1](http://labs.krivi.be/RLRSS?count=5&detail=1)
--   [labs.krivi.be/RLRSS?count=5&detail=1](http://labs.krivi.be/RLRSS?count=420&detail=off)
+-   [labs.krivi.be/RLRSS?count=420&detail=off](http://labs.krivi.be/RLRSS?count=420&detail=off)
 -   [labs.krivi.be/RLRSS?count=10&detail=true](http://labs.krivi.be/RLRSS?count=10&detail=true) (default)
 
-Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play safe.
+Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play safe. Likewise same applies to `false`.
 
 ## Output
 
@@ -95,4 +95,4 @@ The Rocket League news site adds a date to each post, but nowhere does the date 
 
 ## Disclaimer
 
-I'm not affiliated with Psyonix or Rocket League in any way apart from the fact that I love their game (pls bring cross platform inventories k thx bye). If I did anything anyone's not ok with here, please slide in my DMs before taking legal action. GG
+I'm not affiliated with Psyonix or Rocket League in any way apart from the fact that I love their game (pls bring cross platform inventories k thx bye). If I did anything anyone's not ok with here, please slide in my DMs before taking legal action. ⚽️🚙🚗 GG
