@@ -34,7 +34,7 @@ $feeddescription = $feed->createElement("description", "RSS feed for Rocket Leag
 $feedlink = $feed->createElement("link", "https://rocketleague.com/news");
 $language = $feed->createElement("language", "en-us");
 $copyright = $feed->createElement("copyright", date("Y") . " Psyonix Inc. All Rights Reserved");
-$generator = $feed->createElement("generator", "RLNRSS — http://github.com/Qrivi/RLRSS");
+$generator = $feed->createElement("generator", "RLRSS — http://github.com/Qrivi/RLRSS");
 $channel->appendChild($feedtitle);
 $channel->appendChild($feeddescription);
 $channel->appendChild($feedlink);
