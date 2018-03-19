@@ -1,6 +1,7 @@
 <p align="center">
   <img alt="RLRSS" src="https://github.com/Qrivi/RLRSS/blob/master/feedlogo.png" />
 </p>
+
 Decided to write this script since [the official Rocket League news site](https://www.rocketleague.com/news/) does not provide an RSS feed. PHP was the language of choice so I could run it on my cheap PHP server. 👍
 
 The script generates a very complete and valid RSS feed on the fly and takes 2 (well, actually 3) optional parameters.
