@@ -119,6 +119,9 @@ for($i = 0; $i < $pages; $i++){
               $item->appendChild($author);
               $item->appendChild($description);
               $description->appendChild($cdata);
+          }else{
+              $description = $feed->createElement("description", $s);
+              $item->appendChild($description);
           }
       }
   }
