@@ -8,9 +8,14 @@ $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOL
 $pages = ceil($feeditems / 12);
 
 $url = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$aurl = rtrim( preg_replace("/(\w*\.php|\?).*/", "", $url), "/");
+$aurl = rtrim(preg_replace("/(\w*\.php|\?).*/", "", $url), "/");
 
 libxml_use_internal_errors(!$debug);
+
+function getHTML($href)
+{
+    return mb_convert_encoding(preg_replace("/(\s\s+)/", "", file_get_contents($href)), "HTML-ENTITIES", "UTF-8");
+}
 
 $post = new DOMDocument();
 $post->preserveWhiteSpace = false;
@@ -63,71 +68,71 @@ $image->appendChild($imagelink);
 
 $lastYear = date("Y");
 
-for($i = 0; $i < $pages; $i++){
-  $site->loadHTML(preg_replace("/(<hr>|\s\s+)/", "", file_get_contents("https://www.rocketleague.com/ajax/articles-infinite?p=" . $i * 12)));
+for ($i = 0; $i < $pages; $i++) {
+    $site->loadHTML(getHTML("https://www.rocketleague.com/ajax/articles-infinite?p=" . $i * 12));
 
-  foreach ($site->getElementsByTagName("div") as $node) {
-      if (strpos($node->getAttribute("class"), "tile small") !== false) {
-          if ($feeditems !== -1 && --$feeditems < 0) {
-              break;
-          }
+    foreach ($site->getElementsByTagName("div") as $node) {
+        if (strpos($node->getAttribute("class"), "tile small") !== false) {
+            if ($feeditems !== -1 && --$feeditems < 0) {
+                break;
+            }
 
-          $contentNode = $node->firstChild->firstChild->firstChild->nextSibling->nextSibling->firstChild;
+            $contentNode = $node->firstChild->firstChild->firstChild->nextSibling->nextSibling->firstChild;
 
-          $t = $contentNode->firstChild->textContent;
-          $s = $contentNode->firstChild->nextSibling->textContent;
-          $l = "https://rocketleague.com" . $node->firstChild->getAttribute("href");
-          $p = explode(" ", $contentNode->lastChild->firstChild->firstChild->textContent);
+            $t = $contentNode->firstChild->textContent;
+            $s = $contentNode->firstChild->nextSibling->textContent;
+            $l = "https://rocketleague.com" . $node->firstChild->getAttribute("href");
+            $p = explode(" ", $contentNode->lastChild->firstChild->firstChild->textContent);
 
-          $date = DateTime::createFromFormat("F jS Y", "{$p[1]} {$p[2]} {$lastYear}");
-          while (strcmp($date->format("l"), $p[0]) !== 0) {
-              $lastYear--;
-              $date->modify("-1 year");
-          }
+            $date = DateTime::createFromFormat("F jS Y", "{$p[1]} {$p[2]} {$lastYear}");
+            while (strcmp($date->format("l"), $p[0]) !== 0) {
+                $lastYear--;
+                $date->modify("-1 year");
+            }
 
-          $item = $feed->createElement("item");
-          $channel->appendChild($item);
+            $item = $feed->createElement("item");
+            $channel->appendChild($item);
 
-          $title = $feed->createElement("title", $t);
-          $link = $feed->createElement("link", $l);
-          $guid = $feed->createElement("guid", $l);
-          $pubDate = $feed->createElement("pubDate", $date->format("r"));
-          $item->appendChild($title);
-          $item->appendChild($link);
-          $item->appendChild($guid);
-          $item->appendChild($pubDate);
+            $title = $feed->createElement("title", $t);
+            $link = $feed->createElement("link", $l);
+            $guid = $feed->createElement("guid", $l);
+            $pubDate = $feed->createElement("pubDate", $date->format("r"));
+            $item->appendChild($title);
+            $item->appendChild($link);
+            $item->appendChild($guid);
+            $item->appendChild($pubDate);
 
-          if ($detailed) {
-              $post->loadHTML(preg_replace("/\s\s+/", "", file_get_contents($l)));
+            if ($detailed) {
+                $post->loadHTML(getHTML($l));
 
-              $a = null;
-              $d = null;
+                $a = null;
+                $d = null;
 
-              foreach ($post->getElementsByTagName("a") as $link) {
-                  if (!strcmp($link->getAttribute("rel"), "author")) {
-                      $a = "support@psyonix.com ({$link->textContent})";
-                  }
-              }
+                foreach ($post->getElementsByTagName("a") as $link) {
+                    if (!strcmp($link->getAttribute("rel"), "author")) {
+                        $a = "support@psyonix.com ({$link->textContent})";
+                    }
+                }
 
-              foreach ($post->getElementsByTagName("div") as $article) {
-                  if (strpos($article->getAttribute("class"), "article") !== false) {
-                      $article->removeChild($article->lastChild); // remove share buttons
-                      $d = preg_replace("/(\r\n|\r|\n)/", "", $post->saveHTML($article));
-                  }
-              }
+                foreach ($post->getElementsByTagName("div") as $article) {
+                    if (strpos($article->getAttribute("class"), "article") !== false) {
+                        $article->removeChild($article->lastChild); // remove share buttons
+                        $d = preg_replace("/(\r\n|\r|\n| class=\".*\")/", "", $post->saveHTML($article));
+                    }
+                }
 
-              $author = $feed->createElement("author", $a);
-              $cdata = $feed->createCDATASection($d);
-              $description = $feed->createElement("description");
-              $item->appendChild($author);
-              $item->appendChild($description);
-              $description->appendChild($cdata);
-          }else{
-              $description = $feed->createElement("description", $s);
-              $item->appendChild($description);
-          }
-      }
-  }
+                $author = $feed->createElement("author", $a);
+                $cdata = $feed->createCDATASection($d);
+                $description = $feed->createElement("description");
+                $item->appendChild($author);
+                $item->appendChild($description);
+                $description->appendChild($cdata);
+            } else {
+                $description = $feed->createElement("description", $s);
+                $item->appendChild($description);
+            }
+        }
+    }
 }
 
 echo $feed->saveXML();
