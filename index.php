@@ -7,6 +7,9 @@ $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOL
 /* --------- */
 $pages = ceil($feeditems / 12);
 
+$url = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$aurl = rtrim( preg_replace("/(\w*\.php|\?).*/", "", $url), "/");
+
 libxml_use_internal_errors(!$debug);
 
 $post = new DOMDocument();
@@ -45,13 +48,13 @@ $channel->appendChild($generator);
 $atomlink = $feed->createElement("atom:link");
 $atomlink->setAttribute("rel", "self");
 $atomlink->setAttribute("type", "application/rss+xml");
-$atomlink->setAttribute("href", "http://" . $_SERVER["HTTP_HOST"] . substr($_SERVER["PHP_SELF"], 0, strrpos($_SERVER["PHP_SELF"], "/")));
+$atomlink->setAttribute("href", $url);
 $channel->appendChild($atomlink);
 
 $image = $feed->createElement("image");
 $channel->appendChild($image);
 
-$imageurl = $feed->createElement("url", "http://" . $_SERVER["HTTP_HOST"] . substr($_SERVER["PHP_SELF"], 0, strrpos($_SERVER["PHP_SELF"], "/")) . "/feedlogo.png");
+$imageurl = $feed->createElement("url", "{$aurl}/feedlogo.png");
 $imagetitle = $feed->createElement("title", "Rocket League News");
 $imagelink = $feed->createElement("link", "https://rocketleague.com/news");
 $image->appendChild($imageurl);
@@ -76,7 +79,7 @@ for($i = 0; $i < $pages; $i++){
           $l = "https://rocketleague.com" . $node->firstChild->getAttribute("href");
           $p = explode(" ", $contentNode->lastChild->firstChild->firstChild->textContent);
 
-          $date = DateTime::createFromFormat("F jS Y", $p[1] . " " . $p[2] . " " . $lastYear);
+          $date = DateTime::createFromFormat("F jS Y", "{$p[1]} {$p[2]} {$lastYear}");
           while (strcmp($date->format("l"), $p[0]) !== 0) {
               $lastYear--;
               $date->modify("-1 year");
@@ -102,7 +105,7 @@ for($i = 0; $i < $pages; $i++){
 
               foreach ($post->getElementsByTagName("a") as $link) {
                   if (!strcmp($link->getAttribute("rel"), "author")) {
-                      $a = "support@psyonix.com (" . $link->textContent . ")";
+                      $a = "support@psyonix.com ({$link->textContent})";
                   }
               }
 
