@@ -5,6 +5,7 @@ $feeditems = isset($_GET["count"]) ? intval($_GET["count"]) : 10;
 $detailed = isset($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE_BOOLEAN) : true;
 $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
 /* --------- */
+$pages = ceil($feeditems / 12);
 
 libxml_use_internal_errors(!$debug);
 
@@ -13,7 +14,6 @@ $post->preserveWhiteSpace = false;
 
 $site = new DOMDocument();
 $site->preserveWhiteSpace = false;
-$site->loadHTML(preg_replace("/(<hr>|\s\s+)/", "", file_get_contents("https://www.rocketleague.com/ajax/articles-results")));
 
 $feed = new DOMDocument();
 $feed->preserveWhiteSpace = false;
@@ -60,61 +60,71 @@ $image->appendChild($imagelink);
 
 $lastYear = date("Y");
 
-foreach ($site->getElementsByTagName("div") as $node) {
-    if (!strcmp($node->getAttribute("class"), "headline")) {
-        if ($feeditems !== -1 && --$feeditems < 0) {
-            break;
-        }
+for($i = 0; $i < $pages; $i++){
+  $site->loadHTML(preg_replace("/(<hr>|\s\s+)/", "", file_get_contents("https://www.rocketleague.com/ajax/articles-infinite?p=" . $i * 12)));
 
-        $t = $node->lastChild->textContent;
-        $l = "https://rocketleague.com" . $node->lastChild->firstChild->getAttribute("href");
-        $p = explode(" ", $node->firstChild->textContent);
+  foreach ($site->getElementsByTagName("div") as $node) {
+      if (strpos($node->getAttribute("class"), "tile small") !== false) {
+          if ($feeditems !== -1 && --$feeditems < 0) {
+              break;
+          }
 
-        $date = DateTime::createFromFormat("j M Y", $p[2] . " " . $p[1] . " " . $lastYear);
-        while (strcmp($date->format("D"), $p[0]) !== 0) {
-            $lastYear--;
-            $date->modify("-1 year");
-        }
+          $contentNode = $node->firstChild->firstChild->firstChild->nextSibling->nextSibling->firstChild;
 
-        $item = $feed->createElement("item");
-        $channel->appendChild($item);
+          $t = $contentNode->firstChild->textContent;
+          $s = $contentNode->firstChild->nextSibling->textContent;
+          $l = "https://rocketleague.com" . $node->firstChild->getAttribute("href");
+          $p = explode(" ", $contentNode->lastChild->firstChild->firstChild->textContent);
 
-        $title = $feed->createElement("title", $t);
-        $link = $feed->createElement("link", $l);
-        $guid = $feed->createElement("guid", $l);
-        $pubDate = $feed->createElement("pubDate", $date->format("r"));
-        $item->appendChild($title);
-        $item->appendChild($link);
-        $item->appendChild($guid);
-        $item->appendChild($pubDate);
+          $date = DateTime::createFromFormat("F jS Y", $p[1] . " " . $p[2] . " " . $lastYear);
+          while (strcmp($date->format("l"), $p[0]) !== 0) {
+              $lastYear--;
+              $date->modify("-1 year");
+          }
 
-        if ($detailed) {
-            $post->loadHTML(preg_replace("/\s\s+/", "", file_get_contents($l)));
+          $item = $feed->createElement("item");
+          $channel->appendChild($item);
 
-            $a = null;
-            $d = null;
+          $title = $feed->createElement("title", $t);
+          $link = $feed->createElement("link", $l);
+          $guid = $feed->createElement("guid", $l);
+          $pubDate = $feed->createElement("pubDate", $date->format("r"));
+          $item->appendChild($title);
+          $item->appendChild($link);
+          $item->appendChild($guid);
+          $item->appendChild($pubDate);
 
-            foreach ($post->getElementsByTagName("a") as $link) {
-                if (!strcmp($link->getAttribute("rel"), "author")) {
-                    $a = "support@psyonix.com (" . $link->textContent . ")";
-                }
-            }
+          if ($detailed) {
+              $post->loadHTML(preg_replace("/\s\s+/", "", file_get_contents($l)));
 
-            foreach ($post->getElementsByTagName("div") as $article) {
-                if (strpos($article->getAttribute("class"), "article") !== false) {
-                    $article->removeChild($article->lastChild); // remove share buttons
-                    $d = preg_replace("/(\r\n|\r|\n)/", "", $post->saveHTML($article));
-                }
-            }
+              $a = null;
+              $d = null;
 
-            $author = $feed->createElement("author", $a);
-            $cdata = $feed->createCDATASection($d);
-            $description = $feed->createElement("description");
-            $item->appendChild($author);
-            $item->appendChild($description);
-            $description->appendChild($cdata);
-        }
-    }
+              foreach ($post->getElementsByTagName("a") as $link) {
+                  if (!strcmp($link->getAttribute("rel"), "author")) {
+                      $a = "support@psyonix.com (" . $link->textContent . ")";
+                  }
+              }
+
+              foreach ($post->getElementsByTagName("div") as $article) {
+                  if (strpos($article->getAttribute("class"), "article") !== false) {
+                      $article->removeChild($article->lastChild); // remove share buttons
+                      $d = preg_replace("/(\r\n|\r|\n)/", "", $post->saveHTML($article));
+                  }
+              }
+
+              $author = $feed->createElement("author", $a);
+              $cdata = $feed->createCDATASection($d);
+              $description = $feed->createElement("description");
+              $item->appendChild($author);
+              $item->appendChild($description);
+              $description->appendChild($cdata);
+          }else{
+              $description = $feed->createElement("description", $s);
+              $item->appendChild($description);
+          }
+      }
+  }
 }
 
 echo $feed->saveXML();

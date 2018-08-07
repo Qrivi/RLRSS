@@ -80,6 +80,7 @@ Example output with details:
       <link>https://rocketleague.com/news/spring-fever-hits-rocket-league-on-march-19/</link>
       <guid>https://rocketleague.com/news/spring-fever-hits-rocket-league-on-march-19/</guid>
       <pubDate>Fri, 16 Mar 2018 13:10:49 +0100</pubDate>
+      <description>We’ve got a FEVER, and the only prescription is more Soccar!</description>
     </item>
   </channel>
 </rss>
