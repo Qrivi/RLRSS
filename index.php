@@ -69,7 +69,7 @@ $image->appendChild($imagelink);
 $lastYear = date("Y");
 
 for ($i = 0; $i < $pages; $i++) {
-    $site->loadHTML(getHTML("https://www.rocketleague.com/ajax/articles-infinite?p=" . $i * 12));
+    $site->loadHTML(getHTML("https://www.rocketleague.com/ajax/articles-results?p=" . $i * 12));
 
     foreach ($site->getElementsByTagName("div") as $node) {
         if (strpos($node->getAttribute("class"), "tile small") !== false) {
