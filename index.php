@@ -66,8 +66,6 @@ $image->appendChild($imageurl);
 $image->appendChild($imagetitle);
 $image->appendChild($imagelink);
 
-$lastYear = date("Y");
-
 for ($i = 0; $i < $pages; $i++) {
     $site->loadHTML(getHTML("https://www.rocketleague.com/ajax/articles-results?p=" . $i * 12));
 
@@ -82,13 +80,7 @@ for ($i = 0; $i < $pages; $i++) {
             $t = $contentNode->firstChild->textContent;
             $s = $contentNode->firstChild->nextSibling->textContent;
             $l = "https://rocketleague.com" . $node->firstChild->getAttribute("href");
-            $p = explode(" ", $contentNode->lastChild->firstChild->firstChild->textContent);
-
-            $date = DateTime::createFromFormat("F jS Y", "{$p[1]} {$p[2]} {$lastYear}");
-            while (strcmp($date->format("l"), $p[0]) !== 0) {
-                $lastYear--;
-                $date->modify("-1 year");
-            }
+            $p = DateTime::createFromFormat("F j, Y", $contentNode->lastChild->firstChild->firstChild->textContent);
 
             $item = $feed->createElement("item");
             $channel->appendChild($item);
@@ -96,7 +88,7 @@ for ($i = 0; $i < $pages; $i++) {
             $title = $feed->createElement("title", $t);
             $link = $feed->createElement("link", $l);
             $guid = $feed->createElement("guid", $l);
-            $pubDate = $feed->createElement("pubDate", $date->format("r"));
+            $pubDate = $feed->createElement("pubDate", $p->format("r"));
             $item->appendChild($title);
             $item->appendChild($link);
             $item->appendChild($guid);
