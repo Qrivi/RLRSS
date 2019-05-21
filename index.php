@@ -128,9 +128,9 @@ for ($i = 0; $i < $pages; $i++) {
 
                 // get the article contents
                 foreach ($post->getElementsByTagName("div") as $article) {
-                    if (strpos($article->getAttribute("class"), "article") !== false) {
-                        //$article->removeChild($article->lastChild); // remove share buttons
-                        $d = preg_replace("/(\r\n|\r|\n| class=\".*\")/", "", $post->saveHTML($article)); // broken
+                    if (strpos($article->getAttribute("class"), "page-content article") !== false) {
+                        $article->removeChild($article->lastChild); // remove share buttons
+                        $d = preg_replace("/(\r\n|\r|\n| class=\".*\")/", "", $post->saveHTML($article)); 
                     }
                 }
 
