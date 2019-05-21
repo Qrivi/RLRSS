@@ -1,0 +1,20 @@
+{
+    "name": "be.krivi/rlrss",
+    "description": "RSS feed for Rocket League news",
+    "version": "1.0.0",
+    "homepage": "https://github.com/Qrivi/RLRSS",
+    "authors": [
+        {
+            "name": "Kristof Dewilde",
+            "email": "git@krivi.be"
+        }
+    ],
+    "config": {
+        "platform": {
+            "php": "7.3.3"
+        }
+    },
+    "require": {
+        "ext-mbstring": "*"
+    }
+}

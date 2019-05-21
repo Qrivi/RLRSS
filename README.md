@@ -1,8 +1,10 @@
 <p align="center">
-  <img alt="RLRSS" src="https://github.com/Qrivi/RLRSS/blob/master/feedlogo.png" />
+  <img alt="RLRSS" src="https://github.com/Qrivi/RLRSS/blob/master/favicon.png" />
 </p>
 
-Decided to write this script since [the official Rocket League news site](https://www.rocketleague.com/news/) does not provide an RSS feed. PHP was the language of choice so I could run it on my cheap PHP server. 👍
+Decided to write this script because [the official Rocket League news site](https://www.rocketleague.com/news/) does not provide an RSS news feed. PHP was the language of choice so I could write it quickly and run it on my cheap PHP server — though I have since moved to [Heroku](https://www.heroku.com). 
+
+**Since this script scrapes content from Rocket League's news pages, it is very prone to breaking e.g. when Psyonix update their layout, which they have done a couple of times recently.** If you notice that the script is no longer working properly (which means you did before I did), please [create an issue](https://github.com/Qrivi/RLRSS/issues/new) (or fix it and submit a PR). Thanks!
 
 The script generates a very complete and valid RSS feed on the fly and takes 2 (well, actually 3) optional parameters.
 
@@ -10,20 +12,20 @@ The script generates a very complete and valid RSS feed on the fly and takes 2 (
 
 ## Parameters
 
-| Name   | Default | Description                                                                                                                                                                       |
-| ------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| count  | `10`    | The number of recent news items to include in the feed. `-1` will include all items, and `0` will make the feed pretty useless.                                                   |
-| detail | `true`  | Generates rich `<description>` and `<author>` fields for feed items when set to `true`, but careful: may significantly slow down feed generation when `count` is a high number!   |
+| Name   | Default | Description |
+| ------ | ------- | ----------- |
+| count  | `10`    | The amount of recent news items to include in the feed. `-1` will include all items, and `0` will make the feed pretty useless. |
+| detail | `true`  | Generates rich `<description>` and `<author>` fields for feed items when set to `true`, but be careful: may significantly slow down feed generation when `count` is a high number **and on Heroku you might hit a request timeout**! |
 | debug  | `false` | Only thing this does is tell libxml2 to send output through PHP. You likely won't want this, because till libxml2 supports HTML5, your log will be flooded with libxml2 warnings. |
 
 Examples:
 
--   [labs.krivi.be/RLRSS?count=50&detail=no](http://labs.krivi.be/RLRSS?count=50&detail=no)
--   [labs.krivi.be/RLRSS?count=5&detail=1](http://labs.krivi.be/RLRSS?count=5&detail=1)
--   [labs.krivi.be/RLRSS?count=420&detail=off](http://labs.krivi.be/RLRSS?count=420&detail=off)
--   [labs.krivi.be/RLRSS?count=10&detail=true](http://labs.krivi.be/RLRSS?count=10&detail=true) (default)
+-   [https://rlrss.herokuapp.com?count=50&detail=no](https://rlrss.herokuapp.com?count=50&detail=no)
+-   [https://rlrss.herokuapp.com?count=5&detail=1](https://rlrss.herokuapp.com?count=5&detail=1)
+-   [https://rlrss.herokuapp.com?count=420&detail=off](https://rlrss.herokuapp.com?count=420&detail=off)
+-   [https://rlrss.herokuapp.com?count=10&detail=true](https://rlrss.herokuapp.com?count=10&detail=true) (default)
 
-Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play safe. Likewise, same rule applies to `false`.
+Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play it safe. Likewise, same rule applies to `false`.
 
 ## Output
 
@@ -39,9 +41,9 @@ Example output with details:
     <language>en-us</language>
     <copyright>2018 Psyonix Inc. All Rights Reserved</copyright>
     <generator>RLRSS — http://github.com/Qrivi/RLRSS</generator>
-    <atom:link rel="self" type="application/rss+xml" href="http://labs.krivi.be/RLRSS"/>
+    <atom:link rel="self" type="application/rss+xml" href="https://rlrss.herokuapp.com"/>
     <image>
-      <url>http://labs.krivi.be/RLRSS/feedlogo.png</url>
+      <url>https://rlrss.herokuapp.com/favicon.png</url>
       <title>Rocket League News</title>
       <link>https://rocketleague.com/news</link>
     </image>
@@ -69,9 +71,9 @@ Example output with details:
     <language>en-us</language>
     <copyright>2018 Psyonix Inc. All Rights Reserved</copyright>
     <generator>RLRSS — http://github.com/Qrivi/RLRSS</generator>
-    <atom:link rel="self" type="application/rss+xml" href="http://labs.krivi.be/RLRSS"/>
+    <atom:link rel="self" type="application/rss+xml" href="https://rlrss.herokuapp.com"/>
     <image>
-      <url>http://labs.krivi.be/RLRSS/feedlogo.png</url>
+      <url>https://rlrss.herokuapp.com/favicon.png</url>
       <title>Rocket League News</title>
       <link>https://rocketleague.com/news</link>
     </image>
