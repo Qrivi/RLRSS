@@ -5,12 +5,13 @@ $feeditems = isset($_GET["count"]) ? intval($_GET["count"]) : 10;
 $detailed = isset($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE_BOOLEAN) : true;
 $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
 /* --------- */
-$pages = ceil($feeditems / 12);
+$pages = $feeditems === -1 ? PHP_INT_MAX : ceil($feeditems / 12);
 
 $url = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $aurl = rtrim(preg_replace("/(\w*\.php|\?).*/", "", $url), "/");
 
 libxml_use_internal_errors(!$debug);
+set_time_limit(0);
 
 function getHTML($href)
 {
@@ -59,7 +60,7 @@ $channel->appendChild($atomlink);
 $image = $feed->createElement("image");
 $channel->appendChild($image);
 
-$imageurl = $feed->createElement("url", "{$aurl}/feedlogo.png");
+$imageurl = $feed->createElement("url", "{$aurl}/favicon.png");
 $imagetitle = $feed->createElement("title", "Rocket League News");
 $imagelink = $feed->createElement("link", "https://rocketleague.com/news");
 $image->appendChild($imageurl);
@@ -69,9 +70,17 @@ $image->appendChild($imagelink);
 for ($i = 0; $i < $pages; $i++) {
     $site->loadHTML(getHTML("https://www.rocketleague.com/ajax/articles-results?p=" . $i * 12));
 
+    if($site->getElementsByTagName("a")->length === 0) {
+        error_log("Stopping. There is no more news than what's already been fetched.");
+        $i = $pages;
+        break;
+    }
+
     foreach ($site->getElementsByTagName("div") as $node) {
         if (strpos($node->getAttribute("class"), "tile small") !== false) {
             if ($feeditems !== -1 && --$feeditems < 0) {
+                error_log("Stopping. Maximum amount of articles to fetch reached.");
+                $i = $pages;
                 break;
             }
 
@@ -108,7 +117,7 @@ for ($i = 0; $i < $pages; $i++) {
 
                 foreach ($post->getElementsByTagName("div") as $article) {
                     if (strpos($article->getAttribute("class"), "article") !== false) {
-                        $article->removeChild($article->lastChild); // remove share buttons
+                        //$article->removeChild($article->lastChild); // remove share buttons
                         $d = preg_replace("/(\r\n|\r|\n| class=\".*\")/", "", $post->saveHTML($article));
                     }
                 }
