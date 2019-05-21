@@ -14,16 +14,16 @@ The script generates a very complete and valid RSS feed on the fly and takes 2 (
 
 | Name   | Default | Description |
 | ------ | ------- | ----------- |
-| count  | `10`    | The amount of recent news items to include in the feed. `-1` will include all items, and `0` will make the feed pretty useless. |
-| detail | `true`  | Generates rich `<description>` and `<author>` fields for feed items when set to `true`, but be careful: may significantly slow down feed generation when `count` is a high number **and on Heroku you might hit a request timeout**! |
+| limit  | `10`    | The amount of recent news items to include in the feed. `-1` will include all items, and `0` will make the feed pretty useless. |
+| detail | `true`  | Generates rich `<description>` and `<author>` fields for feed items when set to `true`, but be careful: may significantly slow down feed generation when `limit` is a high number **and on Heroku you might hit a request timeout**! |
 | debug  | `false` | Only thing this does is tell libxml2 to send output through PHP. You likely won't want this, because till libxml2 supports HTML5, your log will be flooded with libxml2 warnings. |
 
 Examples:
 
--   [https://rlrss.herokuapp.com?count=50&detail=no](https://rlrss.herokuapp.com?count=50&detail=no)
--   [https://rlrss.herokuapp.com?count=5&detail=1](https://rlrss.herokuapp.com?count=5&detail=1)
--   [https://rlrss.herokuapp.com?count=420&detail=off](https://rlrss.herokuapp.com?count=420&detail=off)
--   [https://rlrss.herokuapp.com?count=10&detail=true](https://rlrss.herokuapp.com?count=10&detail=true) (default)
+-   [https://rlrss.herokuapp.com?limit=50&detail=no](https://rlrss.herokuapp.com?limit=50&detail=no)
+-   [https://rlrss.herokuapp.com?limit=5&detail=1](https://rlrss.herokuapp.com?limit=5&detail=1)
+-   [https://rlrss.herokuapp.com?limit=420&detail=off](https://rlrss.herokuapp.com?limit=420&detail=off)
+-   [https://rlrss.herokuapp.com?limit=10&detail=true](https://rlrss.herokuapp.com?limit=10&detail=true) (default)
 
 Note that since boolean parameters are parsed by PHP's `filter_var()`, most things that should generate `true` will generate `true` (eg. `yes`, `1`, `ON`, ...) but stick to just `true` to play it safe. Likewise, same rule applies to `false`.
 

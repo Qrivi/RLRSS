@@ -1,7 +1,7 @@
 <?php header("Content-Type: application/rss+xml; charset=UTF-8");
 
 // parse request variables set by user
-$feeditems = isset($_GET["count"]) ? intval($_GET["count"]) : 10;
+$feeditems = isset($_GET["limit"]) ? intval($_GET["limit"]) : 10;
 $detailed = isset($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE_BOOLEAN) : true;
 $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
 
