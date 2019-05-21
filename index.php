@@ -6,11 +6,10 @@ $detailed = isset($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE
 $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
 
 $pages = $feeditems === -1 ? PHP_INT_MAX : ceil($feeditems / 12);
-$url = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$aurl = rtrim(preg_replace("/(\w*\.php|\?).*/", "", $url), "/");
+$url = ($_SERVER["SERVER_PORT"] == 443 || $_SERVER["HTTP_X_FORWARDED_PORT"] == 443 ? "https" : "http") . "://{$_SERVER['HTTP_HOST']}";
 
 libxml_use_internal_errors(!$debug);
-set_time_limit(0);
+set_time_limit(0); // Heroku ignores this
 
 // method to get HTML as a string and strip some tags so DOMDocument plays nice with it
 function getHTML($href)
@@ -57,13 +56,13 @@ $channel->appendChild($generator);
 $atomlink = $feed->createElement("atom:link");
 $atomlink->setAttribute("rel", "self");
 $atomlink->setAttribute("type", "application/rss+xml");
-$atomlink->setAttribute("href", $url);
+$atomlink->setAttribute("href", "{$url}{$_SERVER['REQUEST_URI']}");
 $channel->appendChild($atomlink);
 
 $image = $feed->createElement("image");
 $channel->appendChild($image);
 
-$imageurl = $feed->createElement("url", "{$aurl}/favicon.png");
+$imageurl = $feed->createElement("url", "{$url}/favicon.png");
 $imagetitle = $feed->createElement("title", "Rocket League News");
 $imagelink = $feed->createElement("link", "https://rocketleague.com/news");
 $image->appendChild($imageurl);
