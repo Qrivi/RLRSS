@@ -1,6 +1,6 @@
 ⚠️ **Please fork this repo and deploy it to your own Heroku instance.**
 
-Too many people are frequently polling the Heroku url mentioned in this readme. If you get an "application error" near the end of the month: no need to report it. It means the Heroku account ran out of free dynos and stopped running. It'll be back up the next month.
+> Too many people are frequently polling the Heroku url mentioned in this readme. If you get an "application error" near the end of the month: no need to report it. It means the Heroku account ran out of free dynos and stopped running. It'll be back up the next month.
 
 ---
 
