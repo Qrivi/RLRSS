@@ -1,6 +1,9 @@
-⚠️ **Please fork this repo and deploy it to your own Heroku instance.**
+⚠️ **Please deploy RLRSS to your own Heroku instance.**
 
-> Too many people are frequently polling the Heroku url mentioned in this readme. If you get an "application error" near the end of the month: no need to report it. It means the Heroku account ran out of free dynos and stopped running. It'll be back up the next month.
+> Too many people are frequently polling the Heroku url mentioned in this readme. If you get an "application error" near the end of the month: no need to report it. It means the demo Heroku account ran out of free dynos and stopped running. It'll be back up the next month.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 
 ---
 
@@ -8,7 +11,7 @@
   <img alt="RLRSS" src="https://github.com/Qrivi/RLRSS/blob/master/favicon.png" />
 </p>
 
-Decided to write this script because [the official Rocket League news site](https://www.rocketleague.com/news/) does not provide an RSS news feed. PHP was the language of choice so I could write it quickly and run it on my cheap PHP server — though I have since moved to [Heroku](https://www.heroku.com). 
+Decided to write this script because [the official Rocket League news site](https://www.rocketleague.com/news/) does not provide an RSS news feed. PHP was the language of choice so I could write it quickly and run it on my cheap PHP server — though I have since moved to [Heroku](https://www.heroku.com).
 
 **Since this script scrapes content from Rocket League's news pages, it is very prone to breaking e.g. when Psyonix update their layout, which they have done a couple of times recently.** If you notice that the script is no longer working properly (which means you did before I did), please [create an issue](https://github.com/Qrivi/RLRSS/issues/new) (or fix it and submit a PR). Thanks!
 

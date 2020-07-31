@@ -1,0 +1,7 @@
+{
+  "name": "RLRSS",
+  "description": "RSS feed for Rocket League news",
+  "repository": "https://github.com/Qrivi/RLRSS",
+  "logo": "https://raw.githubusercontent.com/Qrivi/RLRSS/master/favicon.png",
+  "keywords": ["rocket league", "rss", "generator"]
+}
