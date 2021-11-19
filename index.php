@@ -6,7 +6,7 @@ $detailed = isset($_GET["detail"]) ? filter_var($_GET["detail"], FILTER_VALIDATE
 $debug = isset($_GET["debug"]) ? filter_var($_GET["debug"], FILTER_VALIDATE_BOOLEAN) : false;
 
 $pages = $feeditems === -1 ? PHP_INT_MAX : ceil($feeditems / 12);
-$url = ($_SERVER["SERVER_PORT"] == 443 || $_SERVER["HTTP_X_FORWARDED_PORT"] == 443 ? "https" : "http") . "://{$_SERVER['HTTP_HOST']}";
+$url = ($_SERVER["SERVER_PORT"] == 443 || isset($_SERVER["HTTP_X_FORWARDED_PORT"]) && $_SERVER["HTTP_X_FORWARDED_PORT"] == 443 ? "https" : "http") . "://{$_SERVER['HTTP_HOST']}";
 
 libxml_use_internal_errors(!$debug);
 set_time_limit(0); // Heroku ignores this
@@ -83,7 +83,7 @@ for ($i = 0; $i < $pages; $i++) {
     // loop over all div containers on the page 
     foreach ($site->getElementsByTagName("div") as $node) {
         // only consider divs that contain article data
-        if (strpos($node->getAttribute("class"), "tile small") !== false) {
+        if (strpos($node->getAttribute("class"), "tile small-12") !== false) {
             // but stop if we have already fetched enough articles
             if ($feeditems !== -1 && --$feeditems < 0) {
                 error_log("Stopping. Maximum amount of articles to fetch reached.");
@@ -92,13 +92,13 @@ for ($i = 0; $i < $pages; $i++) {
             }
             
             // only work with data that is interesting to us
-            $contentNode = $node->firstChild->firstChild->firstChild->nextSibling->nextSibling->firstChild;
+            $contentNode = $node->firstChild->firstChild->firstChild->firstChild->nextSibling->firstChild;
 
             // scrape and parse some data then put it in variables for easy access
             $t = $contentNode->firstChild->textContent;
-            $s = $contentNode->firstChild->nextSibling->textContent;
+            $s = $contentNode->lastChild->firstChild->textContent;
             $l = "https://rocketleague.com" . $node->firstChild->getAttribute("href");
-            $p = DateTime::createFromFormat("F j, Y", $contentNode->lastChild->firstChild->firstChild->textContent);
+//          $p = DateTime::createFromFormat("F j, Y", $contentNode->lastChild->firstChild->textContent);
 
             // structure for the feed's items
             $item = $feed->createElement("item");
@@ -107,11 +107,11 @@ for ($i = 0; $i < $pages; $i++) {
             $title = $feed->createElement("title", $t);
             $link = $feed->createElement("link", $l);
             $guid = $feed->createElement("guid", $l);
-            $pubDate = $feed->createElement("pubDate", $p->format("r"));
+//          $pubDate = $feed->createElement("pubDate", $p->format("r"));
             $item->appendChild($title);
             $item->appendChild($link);
             $item->appendChild($guid);
-            $item->appendChild($pubDate);
+//          $item->appendChild($pubDate);
 
             // fetch article details if that's what the user wants
             if ($detailed) {
@@ -133,10 +133,20 @@ for ($i = 0; $i < $pages; $i++) {
                     }
                 }
 
+                // get date
+                foreach ($post->getElementsByTagName("div") as $article) {
+                    if (strpos($article->getAttribute("class"), "info small-12 columns") !== false) {
+                        $p = preg_replace('/\ (([A-Z]([a-z]+))\ ([0-9][0-9]|[0-9]),\ ([0-9][0-9][0-9][0-9]))(.*)/m', '$1', $article->firstChild->nextSibling->data); 
+                        $p = DateTime::createFromFormat("F j, Y", $p);
+                    }
+                }
+
                 // add it to the feed item
+                $pubDate = $feed->createElement("pubDate", $p->format("r"));
                 $author = $feed->createElement("author", $a);
                 $cdata = $feed->createCDATASection($d);
                 $description = $feed->createElement("description");
+                $item->appendChild($pubDate);
                 $item->appendChild($author);
                 $item->appendChild($description);
                 $description->appendChild($cdata);
